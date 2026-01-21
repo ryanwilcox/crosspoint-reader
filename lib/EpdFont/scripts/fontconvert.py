@@ -11,7 +11,7 @@ from collections import namedtuple
 
 parser = argparse.ArgumentParser(description="Generate a header file from a font to be used with epdiy.")
 parser.add_argument("name", action="store", help="name of the font.")
-parser.add_argument("size", type=int, help="font size to use.")
+parser.add_argument("size", type=float, help="font size to use.")
 parser.add_argument("fontstack", action="store", nargs='+', help="list of font files, ordered by descending priority.")
 parser.add_argument("--2bit", dest="is2Bit", action="store_true", help="generate 2-bit greyscale bitmap instead of 1-bit black and white.")
 parser.add_argument("--additional-intervals", dest="additional_intervals", action="append", help="Additional code point intervals to export as min,max. This argument can be repeated.")
@@ -129,7 +129,7 @@ def load_glyph(code_point):
             face.load_glyph(glyph_index, freetype.FT_LOAD_RENDER)
             return face
         face_index += 1
-    print(f"code point {code_point} ({hex(code_point)}) not found in font stack!", file=sys.stderr)
+    # print(f"code point {code_point} ({hex(code_point)}) not found in font stack!", file=sys.stderr)
     return None
 
 unmerged_intervals = sorted(intervals + add_ints)
@@ -153,7 +153,7 @@ for i_start, i_end in unvalidated_intervals:
         intervals.append((start, i_end))
 
 for face in font_stack:
-    face.set_char_size(size << 6, size << 6, 150, 150)
+    face.set_char_size(int(size * 64), int(size * 64), 150, 150)
 
 total_size = 0
 all_glyphs = []
@@ -192,11 +192,11 @@ for i_start, i_end in intervals:
                     bm = pixels4g[y * pitch + (x // 2)]
                     bm = (bm >> ((x % 2) * 4)) & 0xF
 
-                    if bm >= 12:
+                    if bm >= 8:     # Lower threshold for Black
                         px += 3
-                    elif bm >= 8:
+                    elif bm >= 5:   # Lower threshold for Dark Gray
                         px += 2
-                    elif bm >= 4:
+                    elif bm >= 2:   # Lower threshold for Light Gray
                         px += 1
 
                     if (y * bitmap.width + x) % 4 == 3:
