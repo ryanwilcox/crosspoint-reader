@@ -194,7 +194,7 @@ for i_start, i_end in intervals:
 
                     if bm >= 8:     # Lower threshold for Black
                         px += 3
-                    elif bm >= 5:   # Lower threshold for Dark Gray
+                    elif bm >= 3:   # Lower threshold for Dark Gray
                         px += 2
                     elif bm >= 2:   # Lower threshold for Light Gray
                         px += 1
