@@ -192,11 +192,11 @@ for i_start, i_end in intervals:
                     bm = pixels4g[y * pitch + (x // 2)]
                     bm = (bm >> ((x % 2) * 4)) & 0xF
 
-                    if bm >= 8:     # Lower threshold for Black
+                    if bm >= 8:     # Lower threshold for Black (down from 12)
                         px += 3
-                    elif bm >= 3:   # Lower threshold for Dark Gray
+                    elif bm >= 2:   # Lower threshold for Dark Gray (down from 8)
                         px += 2
-                    elif bm >= 2:   # Lower threshold for Light Gray
+                    elif bm >= 1:   # Lower threshold for Light Gray (down from 4)
                         px += 1
 
                     if (y * bitmap.width + x) % 4 == 3:
